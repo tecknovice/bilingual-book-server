@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import { JSDOM } from "jsdom";
 import { Model } from "mongoose";
 import {
   Paragraph,
@@ -26,25 +27,35 @@ export class ChapterService {
   async parseChapter(createChapterDto: CreateChapterDto): Promise<Paragraph[]> {
     const paragraphs: Paragraph[] = [];
     const { content, translated } = createChapterDto;
-    const contentArray = content.replace(/(\r\n|\n|\r)/gm, "").split(".");
+    const contentArray = this.parseDom(content);
 
-    const translatedArray = translated.replace(/(\r\n|\n|\r)/gm, "").split(".");
-    // console.log("content length", contentArray.length);
-    // console.log("content ", contentArray);
-    // console.log("translated length", translatedArray.length);
-    // console.log("translated ", translatedArray);
+    const translatedArray = this.parseDom(translated);
     for (const [index, value] of contentArray.entries()) {
-      // console.log("value", value);
-      // console.log("translatedArray[index]", translatedArray[index]);
       const paragraph = new this.paragraphModel({
         order: index,
-        content: value.trim(),
-        translated: translatedArray[index].trim(),
+        content: value,
+        translated: translatedArray[index],
       });
       await paragraph.save();
       paragraphs.push(paragraph);
     }
     return paragraphs;
+  }
+
+  parseDom(html: string): string[] {
+    const dom = new JSDOM(html);
+    const strArray = [];
+    try {
+      const pArray = dom.window.document.getElementsByTagName("p");
+      for (const p of pArray) {
+        const s = p.textContent;
+        strArray.push(s);
+      }
+      return strArray;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
   }
 
   findAll() {
