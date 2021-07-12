@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { JSDOM } from "jsdom";
 import { Model } from "mongoose";
 
 import { CreateChapterDto } from "./dto/create-chapter.dto";
@@ -30,11 +29,13 @@ export class ChapterService {
     return item;
   }
 
-  update(id: number, updateChapterDto: UpdateChapterDto) {
-    return `This action updates a #${id} chapter`;
+  async update(id: string, updateChapterDto: UpdateChapterDto) {
+    await this.chapterModel.findByIdAndUpdate(id, { ...updateChapterDto });
+    return updateChapterDto;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} chapter`;
+  async remove(id: string) {
+    await this.chapterModel.findByIdAndDelete(id);
+    return true;
   }
 }

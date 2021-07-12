@@ -21,11 +21,12 @@ export class BookService {
   }
 
   async addChapter({ bookId, chapterId }: any) {
-    console.log(bookId, chapterId);
     const book = await this.bookModel.findById(bookId).exec();
     const chapter = await this.chapterModel.findById(chapterId).exec();
     book.chapters.push(chapter);
     await book.save();
+    chapter.book = book;
+    await chapter.save();
     return true;
   }
 
@@ -43,11 +44,17 @@ export class BookService {
     return item;
   }
 
-  update(id: number, updateBookDto: UpdateBookDto) {
-    return `This action updates a #${id} book`;
+  async update(id: string, updateBookDto: UpdateBookDto) {
+    await this.bookModel.findByIdAndUpdate(id, { ...updateBookDto });
+    return updateBookDto;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} book`;
+  async remove(id: string) {
+    let book = await this.bookModel.findById(id).exec();
+    for (const chapterId of book.chapters) {
+      await this.chapterModel.findByIdAndDelete(chapterId);
+    }
+    await this.bookModel.findByIdAndDelete(id);
+    return true;
   }
 }

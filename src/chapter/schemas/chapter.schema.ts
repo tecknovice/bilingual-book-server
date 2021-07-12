@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import * as mongoose from "mongoose";
+import { Book } from "src/book/schemas/book.schema";
 
 export type ChapterDocument = Chapter & mongoose.Document;
 
@@ -16,6 +17,9 @@ export class Chapter {
 
   @Prop()
   translated: string;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Book" })
+  book: Book;
 }
 
 export const ChapterSchema = SchemaFactory.createForClass(Chapter);

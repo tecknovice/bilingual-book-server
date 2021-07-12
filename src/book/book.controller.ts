@@ -10,7 +10,6 @@ import {
   Put,
 } from "@nestjs/common";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
-import { CreateChapterDto } from "src/chapter/dto/create-chapter.dto";
 import { BookService } from "./book.service";
 import { CreateBookDto } from "./dto/create-book.dto";
 import { UpdateBookDto } from "./dto/update-book.dto";
@@ -42,7 +41,7 @@ export class BookController {
 
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.bookService.update(+id, updateBookDto);
+    return this.bookService.update(id, updateBookDto);
   }
 
   @Delete(":id")
