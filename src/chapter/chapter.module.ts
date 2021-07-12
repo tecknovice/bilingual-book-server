@@ -3,17 +3,10 @@ import { ChapterService } from "./chapter.service";
 import { ChapterController } from "./chapter.controller";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Chapter, ChapterSchema } from "./schemas/chapter.schema";
-import {
-  Paragraph,
-  ParagraphSchema,
-} from "src/paragraph/schemas/paragraph.schema";
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: Chapter.name, schema: ChapterSchema },
-      { name: Paragraph.name, schema: ParagraphSchema },
-    ]),
+    MongooseModule.forFeature([{ name: Chapter.name, schema: ChapterSchema }]),
   ],
   controllers: [ChapterController],
   providers: [ChapterService],

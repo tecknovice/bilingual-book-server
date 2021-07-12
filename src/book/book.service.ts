@@ -47,7 +47,7 @@ export class BookService {
     return `This action updates a #${id} book`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} book`;
   }
 }
