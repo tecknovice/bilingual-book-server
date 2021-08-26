@@ -40,7 +40,9 @@ export class BookService {
 
   async findOne(id: any) {
     let item = await this.bookModel.findById(id).exec();
-    item = await item.populate("chapters").execPopulate();
+    item = await item
+      .populate({ path: "chapters", select: "name" })
+      .execPopulate();
     return item;
   }
 

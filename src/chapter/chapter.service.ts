@@ -25,7 +25,6 @@ export class ChapterService {
 
   async findOne(id: string) {
     let item = await this.chapterModel.findById(id).exec();
-    item = await item.populate("paragraphs").execPopulate();
     return item;
   }
 
